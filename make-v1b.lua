@@ -25,6 +25,7 @@ local function templatecat(x)
 	return cat(TEMPLATEDIR.."/"..x)
 end
 
+do
 	local templates = {
 		[1]			= prepare(eolcontrol(templatecat "1.tmpl.eolc.txt")),
 		["module/part1"]	= prepare(eolcontrol(templatecat "module/part1.tmpl.eolc.txt")),
@@ -40,5 +41,6 @@ end
 		modcat("bar.lua"),
 	}}
 
-	local b = tmpl.render(main, data, templates)
-	io.stdout:write(b)
+	local r = tmpl.render(main, data, templates)
+	io.stdout:write(r)
+end

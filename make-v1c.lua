@@ -25,23 +25,25 @@ local function templatecat(x)
 	return cat(TEMPLATEDIR.."/"..x)
 end
 
-local templates = {
-	[1]			= prepare(eolcontrol(templatecat "1.tmpl.eolc.txt")),
-	["module/part1"]	= prepare(eolcontrol(templatecat "module/part1.tmpl.eolc.txt")),
-	["module/part2"]	= prepare(eolcontrol(templatecat "module/part2.tmpl.eolc.txt")),
-}
+do
+	local templates = {
+		[1]			= prepare(eolcontrol(templatecat "1.tmpl.eolc.txt")),
+		["module/part1"]	= prepare(eolcontrol(templatecat "module/part1.tmpl.eolc.txt")),
+		["module/part2"]	= prepare(eolcontrol(templatecat "module/part2.tmpl.eolc.txt")),
+	}
 
-local main = templates[1]
---local main = prepare("!{>1}")
+	local main = templates[1]
+	--local main = prepare("!{>1}")
 
-local data = {
-	l="\n",
-	modules = {
-		modcat("foo.lua"),
-		modcat("bar.lua"),
-	},
-	main = (templatecat("footer.lua")),
-}
+	local data = {
+		l="\n",
+		modules = {
+			modcat("foo.lua"),
+			modcat("bar.lua"),
+		},
+		main = (templatecat("footer.lua")),
+	}
 
-local b = tmpl.render(main, data, templates)
-io.stdout:write(b)
+	local r = tmpl.render(main, data, templates)
+	io.stdout:write(r)
+end
