@@ -1,0 +1,5 @@
+!n
+sources!{k} = [===[!n
+!{v}
+]===]!n
+package.preload!{k} = preloadgeneric!n

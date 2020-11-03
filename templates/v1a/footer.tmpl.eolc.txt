@@ -1,0 +1,8 @@
+local foo = require "foo"!n
+print(foo.getx(123) )!n
+print(require"bar")!n
+print(not not sources.foo, not not sources.bar)!n
+!n
+package.preload["buz"] = preloadgeneric!n
+print(require"buz")!n
+!{}
