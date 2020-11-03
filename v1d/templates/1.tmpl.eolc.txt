@@ -1,0 +1,12 @@
+local sources = {}!n
+!n
+!{modules>module/part1}
+local function preloadgeneric(modname, p)!n
+	local src = sources[modname]!n
+	if not src then return nil end!n
+	sources[modname]=nil!n
+	return assert(load(src, "t", nil, nil))()!n
+end!n
+!{modules>module/part2}
+!n
+!{main}
