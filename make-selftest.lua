@@ -1,6 +1,6 @@
 
-local tmpl = require "lua-mini-tmpl.tmpl"
-local eolcontrol = require "lua-mini-tmpl.tmpl.eolcontrol"
+local tmpl = require "mini-tmpl"
+local eolcontrol = require "mini-tmpl.eolcontrol"
 
 do -- self test --
 	local templates = { [1] = tmpl.prepare(eolcontrol("- !{1}!{^l}\n")) }

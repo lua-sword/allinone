@@ -8,8 +8,8 @@ end
 local function tableitem(k) return '["' .. k .. '"]' end
 
 
-local tmpl = require "lua-mini-tmpl.tmpl"
-local eolcontrol = require "lua-mini-tmpl.tmpl.eolcontrol"
+local tmpl = require "mini-tmpl"
+local eolcontrol = require "mini-tmpl.eolcontrol"
 local prepare = tmpl.prepare
 
 local TEMPLATEDIR = "v1a/templates"
