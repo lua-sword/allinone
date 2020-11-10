@@ -32,9 +32,6 @@ do
 		["module/part2"]	= prepare(eolcontrol(templatecat "module/part2.tmpl.eolc.txt")),
 	}
 
-	local main = templates[1]
-	--local main = prepare("!{>1}")
-
 	local data = {
 		l="\n",
 		modules = {
@@ -44,6 +41,6 @@ do
 		main = (templatecat("footer.lua")),
 	}
 
-	local r = tmpl.render(main, data, templates)
+	local r = tmpl.render(templates, data)
 	io.stdout:write(r)
 end

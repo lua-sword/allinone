@@ -32,9 +32,6 @@ do
 		["footer"]	= prepare(eolcontrol(templatecat "footer.tmpl.eolc.txt")),
 	}
 
-	local main = templates[1]
-	--local main = prepare("!{1>1}")
-
 	local data = {
 		l="\n",
 		modules = {
@@ -42,7 +39,7 @@ do
 			modcat("bar.lua"),
 		}
 	}
-
-	local r = tmpl.render(main, data, templates)
+print(require"tprint"(templates,{inline=false}))
+	local r = tmpl.render(templates, data)
 	io.stdout:write(r)
 end

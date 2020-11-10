@@ -45,6 +45,7 @@ do
 		main = (cat(MODSDIR.."/main.lua")),
 	}
 
-	local r = tmpl.render(main, data, templates)
+	--print(require"tprint"(templates,{inline=false}))
+	local r = tmpl.render(templates, data)
 	io.stdout:write(r)
 end
