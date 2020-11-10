@@ -1,0 +1,13 @@
+TEXTaaaa
+!{#xx}
+TEXTbbbb
+!{#yy}
+TEXTyyy
+!{/yy}
+TEXToooo
+!{/xx}
+TEXTcccc
+!{#x2}
+TEXTfoo!{fooname}=!{foovalue}
+!{/x2}
+TEXTbar
