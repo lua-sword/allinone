@@ -78,7 +78,7 @@ end
 	local function postprepare(ast)
 
 		local function varname(ast)
-			if type(ast)=="table" and ast[1]==const.var then
+			if type(ast)=="table" and ast[1]==const.VAR then
 				return ast[3]
 			end
 			return nil
@@ -100,11 +100,11 @@ end
 			local b -- begin
 			local buffer={}
 
-			local function buffer2ifvar(buffer, open)
+			local function buffer2astif(buffer, open)
 				assert(#open==4,"var ast must has 4 arguments")
-				table.insert(buffer, 1, const.ifvar)
+				table.insert(buffer, 1, assert(const.IF))
 				table.insert(buffer, 2, 2)
-				table.insert(buffer, 3, open[3]:sub(2))
+				table.insert(buffer, 3, assert(open[3]:sub(2)))
 				table.insert(buffer, 4, assert(open[4]))
 				return buffer
 			end
@@ -114,7 +114,7 @@ end
 				local name = varname(v)
 				if open then
 					if closename(name) and samename_samescope(v,open) then -- closing
-						buffer = buffer2ifvar(buffer, open)
+						buffer = buffer2astif(buffer, open)
 						if b then
 							ast[b] = postprepare(buffer)
 							--table_remove_range(ast,b+1,e)

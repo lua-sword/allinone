@@ -39,7 +39,7 @@ do
 			modcat("bar.lua"),
 		}
 	}
-print(require"tprint"(templates,{inline=false}))
+	--print(require"tprint"(templates,{inline=false}))
 	local r = tmpl.render(templates, data)
 	io.stdout:write(r)
 end
