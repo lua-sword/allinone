@@ -1,0 +1,21 @@
+!{=mod1}
+sources!{k} = [===[
+!{v}
+]===]
+
+!{/mod1}
+!{=mod2}
+package.preload!{k} = preloadgeneric
+!{/mod2}
+local sources = {}
+
+!{modules|filterfunc>mod1}\
+local function preloadgeneric(modname, p)
+	local src = sources[modname]
+	if not src then return nil end
+	sources[modname]=nil
+	return assert(load(src, "t", nil, nil))()
+end
+!{modules>mod2}\
+
+!{main}\

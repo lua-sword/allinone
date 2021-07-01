@@ -1,0 +1,19 @@
+local sources = {}!n
+!n
+!{template < module/1}
+sources!{k} = [===[!n
+!{v}
+]===]!n
+!n
+!{/template}!{modules>module/1}
+local function preloadgeneric(modname, p)!n
+	local src = sources[modname]!n
+	if not src then return nil end!n
+	sources[modname]=nil!n
+	return assert(load(src, "t", nil, nil))()!n
+end!n
+!{def <module/2}
+package.preload!{k} = preloadgeneric!n
+!{/def}!{modules>module/2}
+!n
+!{main}

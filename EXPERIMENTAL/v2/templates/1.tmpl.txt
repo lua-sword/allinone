@@ -1,0 +1,19 @@
+local sources = {}
+
+!{mod1= modules|filterfunc}\
+sources!{k} = [===[
+!{v}\
+]===]
+
+!{/mod1}\
+local function preloadgeneric(modname, p)
+	local src = sources[modname]
+	if not src then return nil end
+	sources[modname]=nil
+	return assert(load(src, "t", nil, nil))()
+end
+!{modules}\
+package.preload!{k} = preloadgeneric
+!{/modules}\
+
+!{main}\

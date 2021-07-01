@@ -1,0 +1,72 @@
+IN LOOP:
+
+!{ _ }  equivalent a "." (equivalent a {{.}} de mustache)
+
+parent access :
+
+!{__}
+!{__.list}
+
+
+divers:
+!{__.list|keys}
+
+global access:
+!{___}
+
+
+on aurait les accès aux variables commencent par:
+- _ ou _.*
+- __ ou __.*
+- ___ ou ___.*
+- chiffre ou lettre pour un nom
+- Q: on gère les __["foo bar"].buz ? oui __.foo[1]
+- __ c'est aussi ["__"]
+- l'accès peut donc aussi commencer par [*
+
+!{tmp < ["__"].foo | encode}
+	...
+!{/tmp}
+
+!{tmp2 |hex2bin < ["__"].foo | f2 }
+
+!{/tmp2}
+
+
+autofix pour
+	. en _
+	.foo en _.foo
+	foo..bar en foo.__.bar
+	..foo en __.foo
+	...foo en ___.foo
+
+laisser acceder [".."] la vrai donnée a ce nom et pas la meta navigation
+
+ou bien
+	utiliser [_] [__] et [___] comme dans du code (avec les 3 variables magiques) cf. lua-data-fs
+
+pour eviter d'avoir du [_]["foo"] => walk(..., {"_","foo"})
+EASY: _.foo  => split sur "." => {"_","foo"}
+comment avoir des espaces ?
+EASY: _.foo bar.buz  => {"_", "foo bar", "buz"}
+comment avoir une clé qui contient un point ?
+	_.foo\.bar.buz => split(.) => {"_", "foo\\", "bar", "buz"} => fix => if item[i] end with \\ then concat item[i].."."..item[i+1] ?
+comment avoir une clé foo\ ?
+	_.foo\\.bar il faut ignorer le \ final si cest un double ...gniiiiiiii
+
+le 1er caractere comme s/x/y/ ?
+	._.foo\\.bar
+	._.foo\bar.buz
+	_.._foo_bar_buz
+	[/]foo/bar/buz
+	[.]foo.bar.buz
+	[_]foo_bar_buz
+	["foo"].bar.buz
+
+
+interdire/warning pour les : foo.___.bar ? ou _.___ ?
+laisser tout faire ?
+
+
+recherche parent recursive ? bof et  compliqué
+!{ *__.foo }

@@ -10,7 +10,6 @@ local function tableitem(k) return '["' .. k .. '"]' end
 
 local tmpl = require "mini-tmpl"
 local eolcontrol = require "mini-tmpl.eolcontrol"
-local prepare = tmpl.prepare
 
 local TEMPLATEDIR = "open-close/templates"
 local MODSDIR = "open-close/mods"
@@ -26,45 +25,6 @@ local function templatecat(x)
 	return cat(TEMPLATEDIR.."/"..x)
 end
 
-do
-
-	local templates = {
-		[1]			= prepare(eolcontrol(templatecat "1.tmpl.eolc.txt")),
---		["module/part1"]	= prepare(eolcontrol(templatecat "module/part1.tmpl.eolc.txt")),
---		["module/part2"]	= prepare(eolcontrol(templatecat "module/part2.tmpl.eolc.txt")),
-	}
-
---[=[
-	local data = {
-		l="\n",
-		modules = {
-			modcat("foo.lua"),
-			modcat("bar.lua"),
-		},
-		main = (cat(MODSDIR.."/main.lua")),
-	}
-]=]--
-
---[=[
-templates[1] =
-{
-        1,
-        "aaaa",
-        {
-                4,
-                "#xx",
-                "local",
-        },
-        "bbbb",
-        {
-                4,
-                "/xx",
-                "local",
-        },
-        "cccc",
-}
-]=]--
-
 local function table_remove_range(t,b,e)
 	for i=e,b,-1 do
 		table.remove(t,i)
@@ -72,6 +32,11 @@ local function table_remove_range(t,b,e)
 	return t
 end
 
+do
+
+	local templates = {
+		[1]			= tmpl.prepare(eolcontrol(templatecat "1.tmpl.eolc.txt")),
+	}
 
 	local const = require "mini-tmpl.common".const
 
@@ -142,11 +107,52 @@ end
 		end
 		return searchandbuffer(ast)
 	end
-	print("avant = "..require"tprint"(templates[1],{inline=false}))
+	local function ast_flat_to_struct(ast)
+		local templates={}
+		--TODO: parcourir l'ast et quand on trouve un "#xx" ... bufferiser jusqu'au "/xx" puis si cest pour definir un template il faut transformer ca en objet de type template
+		
+	end
+	print("avant = "..require"tprint"(require"mini-tmpl.debugast"(templates[1]),{inline=false}))
 	templates[1] = postprepare(templates[1])
 	print("apres = "..require"tprint"(templates[1],{inline=false}))
+	print("apres = "..require"tprint"(require"mini-tmpl.debugast"(templates[1]),{inline=false}))
 
-	local data={}
-	local r = tmpl.render(templates, data)
-	io.stdout:write(r)
+	local etu = require "tmpl-ast-etd2etu"
+	astetu = etu(templates[1])
+	print("etu = "..require"tprint"(astetu,{inline=false}))
+
+	local function cutsubtemplate(astetu)
+		local TYPE_VAR = 3
+		local function is_open(ast)
+			return ast.type==TYPE_VAR and ast.args[1]:sub(1,1)=="#"
+		end
+		local function is_close(ast, current_open_name)
+print("ast.args[1]="..tostring(ast.args[1]), "current_open_name="..current_open_name)
+			return ast.type==TYPE_VAR and ast.args[1]=="/"..current_open_name
+		end
+		local stack = {}
+		local r = {}
+		for i,v in ipairs(astetu) do
+			if is_open(v) then
+				local substack={name=v.args[1]:sub(2), open=v, parent=stack}
+				stack[#stack+1]=substack
+				stack=substack
+			elseif stack.name and is_close(v, stack.name) then
+				stack.close=v
+				stack=stack.parent
+			else
+				stack.content = stack.content or {}
+				stack.content[#stack+1] = v
+			end
+		end
+		r = stack
+		return r
+	end
+
+	print("etu2= "..require"tprint"(cutsubtemplate(astetu.args[1]),{inline=false}))
+
+
+	--local data={}
+	--local r = tmpl.render(templates, data)
+	--io.stdout:write(r.."\n")
 end
