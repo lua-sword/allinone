@@ -1,0 +1,37 @@
+local sources = {}!n
+!n
+!{modules>module/part1}
+local compat_load!n
+do if pcall(load, '') then -- check if it's lua 5.2+ or LuaJIT's with a compatible load!n
+	compat_load = load!n
+else!n
+	local loadstring = assert(loadstring)!n
+	local type = assert(type)!n
+	local setfenv = assert(setfenv)!n
+	local byte = assert(string.byte)!n
+	local find = assert(string.find)!n
+!n
+	local native_load = load!n
+	function compat_load(str,src,mode,env)!n
+		local chunk,err!n
+		if type(str) == 'string' then!n
+			if byte(1) == 27 and not find((mode or 'bt'),'b') then!n
+				return nil,"attempt to load a binary chunk"!n
+			end!n
+			chunk,err = loadstring(str,src)!n
+		else!n
+			chunk,err = native_load(str,src)!n
+		end!n
+		if chunk and env then setfenv(chunk,env) end!n
+		return chunk,err!n
+	end!n
+end end!n
+local function preloadgeneric(modname, p)!n
+	local src = sources[modname]!n
+	if not src then return nil end!n
+	sources[modname]=nil!n
+	return assert(compat_load(src, "@"..modname, "t", _G))(modname,p)!n
+end!n
+!{modules>module/part2}
+!n
+!{main}
