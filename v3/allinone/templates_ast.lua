@@ -1,7 +1,7 @@
 
-local util = require "util"
-util.TEMPLATEDIR = "templates"
-util.MODSDIR     = "mods"
+local util = require "allinone.util"
+util.TEMPLATEDIR = "allinone/templates"
+util.MODSDIR     = "allinone/mods"
 
 local templatecat=util.templatecat
 

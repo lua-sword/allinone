@@ -15,7 +15,8 @@ local cat = util.cat
 --local tmpl = require "mini-tmpl"
 local tmpl_render = require "mini-tmpl.render"
 
-do
+
+local function manualway()
 	local function auto(k) return k:gsub("%.","/")..".lua" end
 	local modules1 = {
 		{["allinone"] = "allinone/init.lua"},
@@ -50,7 +51,6 @@ do
 			item[k]=v(k)
 		end
 	end
-
 	local main = cat(util.MODSDIR.."/"..modules1[1].allinone)
 	table.remove(modules1,1)
 
@@ -59,7 +59,28 @@ do
 		local k,v = next(item)
 		modules[#modules+1] = modcat(k, v)
 	end
+	return main, modules
+end
 
+
+local function rockspecway()
+	local rockspec = require "allinone.rockspec"
+	local m, main, keys = rockspec.moduleslist(rockspec.reader("rockspecs/allinone-0.0-0.rockspec"))
+	local main = cat(util.MODSDIR.."/"..m[main])
+
+	local modules = {}
+	for i,k in ipairs(keys) do
+		local v = m[k]
+		modules[#modules+1] = modcat(k, m[k])
+	end
+	return main, modules
+end
+
+do
+	local main,modules = manualway()
+	local main,modules = rockspecway()
+
+	-- encode the module content and add the proper code to decode it at runtime
 	local dec
 	for i,m in ipairs(modules) do
 		m.v,dec = enc(m.v)
@@ -78,4 +99,5 @@ do
 	--print(require"tprint"(templates,{inline=false}))
 	local r = tmpl_render(templates, data)
 	io.stdout:write(r)
+--	io.stderr:write("#DEBUG: "..require"table".concat(modules or {},", ").."\n")
 end
